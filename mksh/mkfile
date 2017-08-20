@@ -1,0 +1,49 @@
+# MKSHELL - Sets the shell that mk uses (see mk(1))
+# NAME - The name of the source folder. Preferably stripped of version info
+# URL  - URL of the repository
+# DEST - Destination to install the packages. Point it at /
+# MAN  - Location of the manual pages. Point it at $DEST/share/man
+# FLAGS - Extra flags to pass to the program
+
+MKSHELL=/bin/sh
+NAME=mksh
+URL=https://www.mirbsd.org/MirOS/dist/mir/mksh/mksh-R56.tgz
+DEST=${INSTDEST}
+MAN=${MANDEST}
+FLAGS=
+
+update:V:
+	if [[ ! -d $NAME ]]; then \
+          wget $URL; mv mksh-* $NAME.tgz; tar -xzf $NAME.tgz; rm *tgz; \
+	fi
+	chmod +x $NAME/Build.sh
+
+build:V:
+	LDSTATIC='-static' cd $NAME && ./Build.sh
+
+install:V:
+	# Install binary
+	mv $NAME/mksh $DEST/bin/mksh
+	chmod 555 $DEST/bin/mksh
+	# Ensure mksh's listed and install config
+	grep -x $DEST/bin/mksh $DEST/etc/shells >/dev/null || echo /bin/mksh >>$DEST/etc/shells
+	# Move doc to right place
+	mkdir -p $DEST$MAN/cat1/
+	mv $NAME/lksh.cat1 $DEST$MAN/cat1/lksh.0
+	mv $NAME/mksh.cat1 $DEST$MAN/cat1/mksh.0
+	mkdir -p $DEST$MAN/man1/
+	mv $NAME/lksh.1 $NAME/mksh.1 $DEST$MAN/man1
+	chmod 444 $DEST$MAN/cat1/lksh.0 $DEST$MAN/cat1/mksh.0
+	chmod 444 $DEST$MAN/man1/lksh.1 $DEST$MAN/man1/mksh.1
+
+uninstall:V:
+	rm -f $DEST/bin/mksh
+	rm -f $DEST$MAN/cat/lksh.0
+	rm -f $DEST$MAN/cat/mksh.0
+	rm -f $DEST$MAN/man1/lksh.1
+	rm -f $DEST$MAN/man1/mksh.1
+
+clean:V:
+	rm -rf $NAME
+
+do:V: update build install

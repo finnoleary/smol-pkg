@@ -1,0 +1,34 @@
+# MKSHELL - Sets the shell that mk uses (see mk(1))
+# NAME - The name of the source folder
+# URL  - URL of the repository
+# DEST - Destination to install the packages. Point it at /
+# MAN  - Location of the manual pages. Point it at /share/man
+# FLAGS - Extra flags to pass to the program
+
+MKSHELL=/bin/sh
+NAME=mandoc
+URL=http://mdocml.bsd.lv/snapshots/mandoc.tar.gz
+DEST=${INSTDEST}
+MAN=${MANDEST}
+FLAGS=
+
+update:V:
+	if [[ ! -d $NAME ]]; then wget $URL; gunzip $NAME.tar.gz; tar -xf $NAME.tar; \
+          mv $NAME-* $NAME; \
+          rm $NAME.tar; \
+        fi
+	echo "MANPATH_DEFAULT='/share/man'" >> $NAME/configure.local
+	echo "PREFIX=''" >> $NAME/configure.local
+	echo "MANDIR='"$MAN"'" >> $NAME/configure.local
+
+install:V:
+	(cd mandoc && ./configure)
+	MANPREFIX=$MAN DESTDIR=$DEST make -C $NAME install
+
+uninstall:V:
+	MANPREFIX=$MAN DESTDIR=$DEST make -C $NAME uninstall
+
+clean:V:
+	rm -rf $NAME
+
+do:V: update install
