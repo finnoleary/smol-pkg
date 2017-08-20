@@ -22,10 +22,10 @@ update:V:
 	sed -i "s|^OBJTYPE\s*=.*|OBJTYPE = "$ARCH"|" $NAME/config.mk
 
 install:V:
-	MANPREFIX=$MAN DESTDIR=$DEST make -C $NAME install
+	DESTDIR=$DEST make -C $NAME install
 
 uninstall:V:
-	MANPREFIX=$MAN DESTDIR=$DEST make -C $NAME uninstall
+	DESTDIR=$DEST make -C $NAME uninstall
 
 clean:V:
 	rm -rf $NAME
