@@ -3,26 +3,29 @@
 # URL  - URL of the repository
 # DEST - Destination to install the packages. Point it at /
 # MAN  - Location of the manual pages. Point it at $DEST/share/man
+# ARCH - See 9base/config.mk for available options.
 # FLAGS - Extra flags to pass to the program
 
-MKSHELL=/bin/bash
-NAME=ubase
-URL=git://git.suckless.org/ubase
+MKSHELL=/bin/sh
+NAME=9base
+URL=git://git.suckless.org/9base
 DEST=${INSTDEST}
 MAN=${MANDEST}
-FLAGS=-static
+ARCH=x86_64
+FLAGS=
 
 update:V:
 	if [[ ! -d $NAME ]]; then git clone $URL; fi
 	git -C $NAME pull
-	MAN=$MAN sed -i 's|^MANPREFIX\s*=.*$|MANPREFIX = '$MAN'|' $NAME/config.mk
-	sed -i -e 's/^PREFIX\s*=.*$/PREFIX = /' $NAME/config.mk
+	sed -i "s/^PREFIX\s*=.*/PREFIX =/" $NAME/config.mk
+	sed -i "s|^MANPREFIX\s*=.*|MANPREFIX = "$MAN"|" $NAME/config.mk
+	sed -i "s|^OBJTYPE\s*=.*|OBJTYPE = "$ARCH"|" $NAME/config.mk
 
 install:V:
-	DESTDIR=$DEST CFLAGS=$FLAGS make -C $NAME install
+	MANPREFIX=$MAN DESTDIR=$DEST make -C $NAME install
 
 uninstall:V:
-	DESTDIR=$DEST make -e -C $NAME uninstall
+	MANPREFIX=$MAN DESTDIR=$DEST make -C $NAME uninstall
 
 clean:V:
 	rm -rf $NAME
