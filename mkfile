@@ -4,7 +4,15 @@
 DEST=$INSTDEST
 MAN=$MANINST
 
+MKSHELL=/bin/mksh
+all:
+	mk -a sinit
+	mk -a smdev
+	mk -a ubase
+	mk -a 9base
+	mk -a mksh
+	mk -a mandoc
+	mk tcc
 %:
-	INSTDEST=$DEST cd $target && make do
+	INSTDEST=$DEST cd $stem && mk do
 
-all: sinit ubase smdev 9base mandoc mksh tcc

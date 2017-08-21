@@ -17,6 +17,7 @@ update:V:
 	git -C $NAME pull
 
 install:V:
+	make -C $NAME
 	PREFIX="" MANPREFIX=$MAN DESTDIR=$DEST make -e -C $NAME install
 
 uninstall:V:
