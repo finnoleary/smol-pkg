@@ -3,22 +3,25 @@
 # URL  - URL of the repository
 # DEST - Destination to install the packages. Point it at /
 # MAN  - Location of the manual pages. Point it at $DEST/share/man
-# FLAGS - Extra flags to pass to the program
+# *FLAGS - Extra flags to pass to the program. Must contain -static
 
 MKSHELL=/bin/sh
 NAME=smdev
 URL=git://git.suckless.org/smdev
 DEST=${INSTDEST}
 MAN=${MANDEST}
-FLAGS=-static
+CFLAGS=-static
+LDFLAGS=-static
 
 update:V:
 	if [[ ! -d $NAME ]]; then git clone $URL; fi
 	git -C $NAME pull
-	sed -i 's/^PREFIX.*=.*$/PREFIX =/' $NAME/config.mk
+	sed -i 's/^PREFIX\s*=.*$/PREFIX =/' $NAME/config.mk
+	sed -i 's/^CFLAGS\s*=\(.*\)$/CFLAGS = \1 '$CFLAGS'/' $NAME/config.mk
+	sed -i 's/^LDFLAGS\s*=\(.*\)$/LDFLAGS = \1 '$LDFLAGS'/' $NAME/config.mk
 
 install:V:
-	LDFLAGS=$FLAGS DESTDIR=$DEST make -C $NAME install
+	DESTDIR=$DEST make -C $NAME install
 
 uninstall:V:
 	DESTDIR=$DEST make -C $NAME uninstall

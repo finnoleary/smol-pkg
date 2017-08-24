@@ -19,7 +19,7 @@ update:V:
 	chmod +x $NAME/Build.sh
 
 build:V:
-	LDSTATIC='-static' cd $NAME && ./Build.sh
+	cd $NAME && LDSTATIC='-static' ./Build.sh
 
 install:V:
 	# Install binary

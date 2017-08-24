@@ -3,14 +3,16 @@
 # URL  - URL of the repository
 # DEST - Destination to install the packages. Point it at /
 # MAN  - Location of the manual pages. Point it at /share/man
-# FLAGS - Extra flags to pass to the program
+# *FLAGS - Extra flags to pass to the program. *must* contain -static
 
 MKSHELL=/bin/sh
 NAME=mandoc
 URL=http://mdocml.bsd.lv/snapshots/mandoc.tar.gz
 DEST=${INSTDEST}
 MAN=${MANDEST}
-FLAGS=
+SBIN="/bin"
+CFLAGS=-static
+LDFLAGS=-static
 
 update:V:
 	if [[ ! -d $NAME ]]; then wget $URL; gunzip $NAME.tar.gz; tar -xf $NAME.tar; \
@@ -19,7 +21,10 @@ update:V:
         fi
 	echo "MANPATH_DEFAULT='/share/man'" >> $NAME/configure.local
 	echo "PREFIX=''" >> $NAME/configure.local
-	echo "MANDIR='"$MAN"'" >> $NAME/configure.local
+	echo 'MANDIR='$MAN >> $NAME/configure.local
+	echo 'SBINDIR='$SBIN >> $NAME/configure.local
+	echo 'CFLAGS='$CFLAGS >> $NAME/configure.local
+	echo 'LDFLAGS='$LDFLAGS >> $NAME/configure.local
 
 install:V:
 	(cd mandoc && ./configure)

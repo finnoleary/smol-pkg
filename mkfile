@@ -1,8 +1,8 @@
 # Feel free to set these semi-permananently
 # DEST = location of /
 # MAN  = location of /share/man (Should expand to $DEST$MAN)
-DEST=$INSTDEST
-MAN=$MANINST
+DEST=${INSTDEST}
+MAN=${MANINST}
 
 MKSHELL=/bin/mksh
 all:
@@ -10,9 +10,27 @@ all:
 	mk -a smdev
 	mk -a ubase
 	mk -a 9base
+	mk -a sbase
 	mk -a mksh
 	mk -a mandoc
-	mk tcc
+	mk -a curses
+	mk -a vi
+	# mk -a tcc
+	# mk -a svc
+
+cleanup:
+	(cd sinit  && mk clean)
+	(cd smdev  && mk clean)
+	(cd ubase  && mk clean)
+	(cd 9base  && mk clean)
+	(cd sbase  && mk clean)
+	(cd mksh   && mk clean)
+	(cd mandoc && mk clean)
+	(cd curses && mk clean)
+	(cd vi     && mk clean)
+	# (cd tcc    && mk clean)
+	# (cd svc    && mk clean)
+
 %:
 	INSTDEST=$DEST cd $stem && mk do
 

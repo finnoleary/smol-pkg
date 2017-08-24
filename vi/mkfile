@@ -1,0 +1,41 @@
+# MKSHELL - Sets the shell that mk uses (see mk(1))
+# NAME - The name of the source folder
+# URL  - URL of the repository
+# DEST - Destination to install the packages. Point it at /
+# MAN  - Location of the manual pages. Point it at $DEST/share/man
+# *FLAGS - Extra flags to pass to the program. Must contain -static
+
+MKSHELL=/bin/sh
+NAME=ex
+URL=https://github.com/sctb/ex.git
+DEST=${INSTDEST}
+MAN=${MANDEST}
+CFLAGS=-static
+LDFLAGS=-static
+
+# This is local to ex. TLIB is the option for TERMLIB, see ex/Makefile and ex/libterm/
+TLIB=termlib
+
+update:V:
+	if [[ ! -d $NAME ]]; then git clone $URL; fi
+	git -C $NAME pull
+	sed -i -e 's/^PREFIX\s*?=.*$/PREFIX =/' $NAME/Makefile
+	sed -i -e 's|^DESTDIR\s*=.*$|DESTDIR = '$DEST'|' $NAME/Makefile
+	sed -i -e 's|INSTALL\s*=.*$|INSTALL = /bin/install|' $NAME/Makefile
+	sed -i -e 's/^#CFLAGS\s*=.*$/CFLAGS ='$CFLAGS'/' $NAME/Makefile
+	sed -i -e 's/^#LDFLAGS\s*=.*$/LDFLAGS ='$LDFLAGS'/' $NAME/Makefile
+	sed -i -e 's/^TERMLIB\s*=.*$/TERMLIB='$TLIB'/' $NAME/Makefile
+
+build:V:
+	make -C $NAME
+
+install:V:
+	make -C $NAME install
+
+uninstall:V:
+	make -C $NAME uninstall
+
+clean:V:
+	rm -rf $NAME
+
+do:V: update install
