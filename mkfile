@@ -9,12 +9,14 @@ all:
 	mk -a sinit
 	mk -a smdev
 	mk -a ubase
-	mk -a 9base
+	# mk -a 9base
 	mk -a sbase
 	mk -a mksh
 	mk -a mandoc
 	mk -a curses
 	mk -a vi
+	mk -a strace
+	mk -a less
 	# mk -a tcc
 	# mk -a svc
 
@@ -22,12 +24,14 @@ cleanup:
 	(cd sinit  && mk clean)
 	(cd smdev  && mk clean)
 	(cd ubase  && mk clean)
-	(cd 9base  && mk clean)
+	# (cd 9base  && mk clean)
 	(cd sbase  && mk clean)
 	(cd mksh   && mk clean)
 	(cd mandoc && mk clean)
 	(cd curses && mk clean)
 	(cd vi     && mk clean)
+	(cd strace && mk clean)
+	(cd less   && mk clean)
 	# (cd tcc    && mk clean)
 	# (cd svc    && mk clean)
 

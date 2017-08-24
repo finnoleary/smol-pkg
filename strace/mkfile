@@ -1,0 +1,36 @@
+# MKSHELL - Sets the shell that mk uses (see mk(1))
+# NAME - The name of the source folder
+# URL  - URL of the repository
+# DEST - Destination to install the packages. Point it at /
+# SBIN - Location of /sbin. Point it at /bin
+# MAN  - Location of the manual pages. Point it at $DEST/share/man
+# FLAGS - Extra flags to pass to the program
+
+MKSHELL=/bin/sh
+NAME=strace
+URL=https://github.com/strace/strace.git
+DEST=${INSTDEST}
+SBIN="/bin"
+MAN=${MANDEST}
+FLAGS=-static
+
+update:V:
+	if [[ ! -d $NAME ]]; then git clone $URL; fi
+	git -C $NAME pull
+	(cd $NAME && ./bootstrap)
+	(cd $NAME && ./configure --sbindir=$SBIN --prefix="" \
+	 LDFLAGS=$FLAGS CFLAGS=$FLAGS DESTDIR=$DEST)
+
+build:V:
+	make -C $NAME
+
+install:V:
+	make -C $NAME install DESTDIR=$DEST
+
+uninstall:V:
+	make -C $NAME uninstall DESTDIR=$DEST
+
+clean:V:
+	rm -rf $NAME
+
+do:V: update install

@@ -1,0 +1,41 @@
+# MKSHELL - Sets the shell that mk uses (see mk(1))
+# NAME - The name of the source folder
+# URL  - URL of the repository
+# DEST - Destination to install the packages. Point it at /
+# SBIN - Locatoin of /sbin. Point it at /bin
+# MAN  - Location of the manual pages. Point it at $DEST/share/man
+# *FLAGS - Extra flags to pass to the program. Must contain -static
+
+MKSHELL=/bin/sh
+NAME=less
+URL=http://www.greenwoodsoftware.com/less/less-487.tar.gz
+DEST=${INSTDEST}
+SBIN=/bin
+MAN=${MANDEST}
+CFLAGS=-static
+LDFLAGS=-static
+
+update:V:
+	if [[ ! -d $NAME ]]; then
+	  wget $URL -O $NAME.tar.gz;
+	  gunzip $NAME.tar.gz;
+	  tar -xf $NAME.tar; \
+          rm $NAME.tar; \
+	  mv $NAME* $NAME; \
+        fi
+	(cd $NAME && ./configure --prefix="" --sbindir=$SBIN \
+	 CC=${CC} LDFLAGS=$LDFLAGS CFLAGS=$CFLAGS )
+
+build:V:
+	make -C $NAME DESTDIR=$DEST
+
+install:V:
+	make -C $NAME install DESTDIR=$DEST 
+
+uninstall:V:
+	make -C $NAME uninstall DESTDIR=$DEST
+
+clean:V:
+	rm -rf $NAME
+
+do:V: update build install

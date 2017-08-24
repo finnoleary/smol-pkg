@@ -15,8 +15,10 @@ CFLAGS=-static
 LDFLAGS=-static
 
 update:V:
-	if [[ ! -d $NAME ]]; then wget $URL; gunzip $NAME.tar.gz; tar -xf $NAME.tar; \
-          mv $NAME-* $NAME; \
+	if [[ ! -d $NAME ]]; then
+	  wget $URL -O $NAME.tar.gz;
+	  gunzip $NAME.tar.gz;
+	  tar -xf $NAME.tar; \
           rm $NAME.tar; \
         fi
 	echo "MANPATH_DEFAULT='/share/man'" >> $NAME/configure.local
