@@ -4,10 +4,12 @@
 # DEST - Destination to install the packages. Point it at /
 # MAN  - Location of the manual pages. Point it at $DEST/share/man
 # *FLAGS - Extra flags to pass to the program. Must contain -static
+# CC   - The C compiler to execute
 
 MKSHELL=/bin/sh
-NAME=sbase
-URL=git://git.suckless.org/sbase
+NAME=ncurses
+URL=https://github.com/mirror/ncurses.git
+CC=musl-gcc
 DEST=${INSTDEST}
 MAN=${MANDEST}
 CFLAGS=-static
@@ -16,14 +18,12 @@ LDFLAGS=-static
 update:V:
 	if [[ ! -d $NAME ]]; then git clone $URL; fi
 	git -C $NAME pull
-	sed -i 's|^MANPREFIX\s*=.*$|MANPREFIX = '$MAN'|' $NAME/config.mk
-	sed -i -e 's/^PREFIX\s*=.*$/PREFIX = /' $NAME/config.mk
-	# TODO: There is a bug that if you update then it will add duplicates to the CFLAGS.
-	sed -i -e 's/^CFLAGS\s*= \(.*\)$/CFLAGS = \1 '$CFLAGS'/' $NAME/config.mk
-	sed -i -e 's/^LDFLAGS\s*= \(.*\)$/LDFLAGS = \1 '$LDFLAGS'/' $NAME/config.mk
+	(cd $NAME && ./configure --prefix="" \
+	 CC=$CC CFLAGS=$CFLAGS LDFLAGS=$LDFLAGS \
+	 DESTDIR=$DEST)
 
 build:V:
-	make -C $NAME
+	make -C $NAME build
 
 install:V:
 	DESTDIR=$DEST make -C $NAME install

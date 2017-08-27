@@ -1,6 +1,7 @@
 # MKSHELL - Sets the shell that mk uses (see mk(1))
 # NAME - The name of the source folder
 # URL  - URL of the repository
+# CC   - Which C compiler to use. If set to musl-*, you need to install kernel headers for musl
 # DEST - Destination to install the packages. Point it at /
 # MAN  - Location of the manual pages. Point it at $DEST/share/man
 # ARCH - See 9base/config.mk for available options.
@@ -9,10 +10,11 @@
 MKSHELL=/bin/sh
 NAME=9base
 URL=git://git.suckless.org/9base
+CC=cc
 DEST=${INSTDEST}
 MAN=${MANDEST}
 ARCH=x86_64
-FLAGS=
+FLAGS=-static
 
 update:V:
 	if [[ ! -d $NAME ]]; then git clone $URL; fi
@@ -20,6 +22,7 @@ update:V:
 	sed -i "s/^PREFIX\s*=.*/PREFIX =/" $NAME/config.mk
 	sed -i "s|^MANPREFIX\s*=.*|MANPREFIX = "$MAN"|" $NAME/config.mk
 	sed -i "s|^OBJTYPE\s*=.*|OBJTYPE = "$ARCH"|" $NAME/config.mk
+	sed -i "s|^CC\s*=.*|CC = "$CC"|" $NAME/config.mk
 
 build:V:
 	make -C $NAME
@@ -33,4 +36,4 @@ uninstall:V:
 clean:V:
 	rm -rf $NAME
 
-do:V: update install
+do:V: update build install

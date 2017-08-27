@@ -1,6 +1,7 @@
 # MKSHELL - Sets the shell that mk uses (see mk(1))
 # NAME - The name of the source folder
 # URL  - URL of the repository
+# CC   - C compiler to use. Should be musl-* unless you want to depend on a .so at runtime
 # DEST - Destination to install the packages. Point it at /
 # MAN  - Location of the manual pages. Point it at $DEST/share/man
 # *FLAGS - Extra flags to pass to the program. CFLAGS and LDFLAGS *must* contain -static
@@ -8,6 +9,7 @@
 MKSHELL=/bin/bash
 NAME=ubase
 URL=git://git.suckless.org/ubase
+CC=musl-gcc
 DEST=${INSTDEST}
 MAN=${MANDEST}
 CFLAGS=-static
@@ -21,6 +23,7 @@ update:V:
 	# TODO: There is a bug that if you update then it will add duplicates to the CFLAGS.
 	sed -i -e 's/^CFLAGS\s*= \(.*\)$/CFLAGS = \1 '$CFLAGS'/' $NAME/config.mk
 	sed -i -e 's/^LDFLAGS\s*= \(.*\)$/LDFLAGS = \1 '$LDFLAGS'/' $NAME/config.mk
+	sed -i -e 's/^CC\s*=.*$/CC = '$CC'/' $NAME/config.mk
 
 build:V:
 	make -C $NAME

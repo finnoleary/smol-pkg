@@ -2,3 +2,4 @@ tcc
 svc
 xz
 plan9port
+mksh (/bin/sh link. "mksh -o sh")

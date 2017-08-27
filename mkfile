@@ -3,6 +3,7 @@
 # MAN  = location of /share/man (Should expand to $DEST$MAN)
 DEST=${INSTDEST}
 MAN=${MANINST}
+CURSES=ncurses
 
 MKSHELL=/bin/mksh
 all:
@@ -13,7 +14,7 @@ all:
 	mk -a sbase
 	mk -a mksh
 	mk -a mandoc
-	mk -a curses
+	mk -a $CURSES
 	mk -a vi
 	mk -a strace
 	mk -a less
@@ -21,19 +22,19 @@ all:
 	# mk -a svc
 
 cleanup:
-	(cd sinit  && mk clean)
-	(cd smdev  && mk clean)
-	(cd ubase  && mk clean)
-	# (cd 9base  && mk clean)
-	(cd sbase  && mk clean)
-	(cd mksh   && mk clean)
-	(cd mandoc && mk clean)
-	(cd curses && mk clean)
-	(cd vi     && mk clean)
-	(cd strace && mk clean)
-	(cd less   && mk clean)
-	# (cd tcc    && mk clean)
-	# (cd svc    && mk clean)
+	(cd sinit     && mk clean)
+	(cd smdev     && mk clean)
+	(cd ubase     && mk clean)
+	# (cd 9base     && mk clean)
+	(cd sbase     && mk clean)
+	(cd mksh      && mk clean)
+	(cd mandoc    && mk clean)
+	(cd $CURSES   && mk clean)
+	(cd vi        && mk clean)
+	(cd strace    && mk clean)
+	(cd less      && mk clean)
+	# (cd tcc       && mk clean)
+	# (cd svc       && mk clean)
 
 %:
 	INSTDEST=$DEST cd $stem && mk do
