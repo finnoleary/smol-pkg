@@ -9,6 +9,7 @@
 MKSHELL=/bin/sh
 NAME=ncurses
 URL=https://github.com/mirror/ncurses.git
+URLB=http://www.catb.org/~esr/terminfo/termtypes.tc.gz
 CC=musl-gcc
 DEST=${INSTDEST}
 MAN=${MANDEST}
@@ -23,10 +24,14 @@ update:V:
 	 DESTDIR=$DEST)
 
 build:V:
-	make -C $NAME build
+	make -C $NAME
 
 install:V:
 	DESTDIR=$DEST make -C $NAME install
+	echo "Installing termcap"
+	wget $URLB -O termtypes.gz
+	gunzip termtypes.gz
+	mv termtypes /smol/etc/termcap
 
 uninstall:V:
 	DESTDIR=$DEST make -C $NAME uninstall

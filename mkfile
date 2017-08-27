@@ -3,7 +3,6 @@
 # MAN  = location of /share/man (Should expand to $DEST$MAN)
 DEST=${INSTDEST}
 MAN=${MANINST}
-CURSES=ncurses
 
 MKSHELL=/bin/mksh
 all:
@@ -14,7 +13,7 @@ all:
 	mk -a sbase
 	mk -a mksh
 	mk -a mandoc
-	mk -a $CURSES
+	mk -a ncurses
 	mk -a vi
 	mk -a strace
 	mk -a less
@@ -29,7 +28,7 @@ cleanup:
 	(cd sbase     && mk clean)
 	(cd mksh      && mk clean)
 	(cd mandoc    && mk clean)
-	(cd $CURSES   && mk clean)
+	(cd ncurses   && mk clean)
 	(cd vi        && mk clean)
 	(cd strace    && mk clean)
 	(cd less      && mk clean)
