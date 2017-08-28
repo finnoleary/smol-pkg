@@ -15,9 +15,12 @@ FLAGS=
 update:V:
 	if [[ ! -d $NAME ]]; then git clone $URL; fi
 	git -C $NAME pull
+	sed -i -e 's|/bin/rc|/etc/rc|' $NAME/config.def.h
+
+build:V:
+	make -C $NAME
 
 install:V:
-	make -C $NAME
 	PREFIX="" MANPREFIX=$MAN DESTDIR=$DEST make -e -C $NAME install
 
 uninstall:V:
@@ -26,4 +29,4 @@ uninstall:V:
 clean:V:
 	rm -rf $NAME
 
-do:V: update install
+do:V: update build install
